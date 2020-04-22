@@ -1,51 +1,52 @@
 package com.example.gmail3;
 
 
+import java.util.Random;
+
 public class ContactModel {
-    String fullname;
-    String main;
-    String main2;
-    boolean isSelected;
+    String name;
+    String subject;
+    String content;
     String time;
+    boolean isFavorite;
+    int color;
 
-    public ContactModel(String fullname,String main,String main2,String time) {
-        this.fullname = fullname;
-        this.main=main;
-        this.main2=main2;
-        this.time=time;
+    public ContactModel(String name, String subject, String content, String time) {
+        this.name = name;
+        this.subject = subject;
+        this.content = content;
+        this.time = time;
+        isFavorite = false;
+        Random random = new Random();
+        color = random.nextInt();
     }
 
-    public String getMain2() {
-        return main2;
+    public String getName() {
+        return name;
     }
 
-    public void setMain2(String main2) {
-        this.main2 = main2;
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public String getTime() {
         return time;
     }
-    public void setTime(String time) {
-        this.time = time;
+
+    public boolean isFavorite() {
+        return isFavorite;
     }
-    public String getFullname() {
-        return fullname;
+
+    public int getColor() {
+        return color;
     }
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-    public String getMain() {
-        return main;
-    }
-    public void setMain(String main) {
-        this.main = main;
-    }
-    public boolean isSelected() {
-        return isSelected;
-    }
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }
 

@@ -1,76 +1,91 @@
 package com.example.gmail3;
 
-import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
-public class ImageAdapter extends BaseAdapter {
-    List<ContactModel> contacts;
-    public ImageAdapter(List<ContactModel> contacts) {
-        this.contacts = contacts;
-    }
-    @Override
-    public int getCount() {
-        return contacts.size();
-    }
-    @Override
-    public Object getItem(int i) {
-        return contacts.get(i);
-    }
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-    @Override
-    public View getView(final int i, View view, ViewGroup viewGroup) {
-        ViewHolder viewHolder;
-        if (view == null) {
-            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_item_1, viewGroup, false);
-            viewHolder = new ViewHolder();
-            viewHolder.textFullname = view.findViewById(R.id.text_fullname);
-            viewHolder.textRound = view.findViewById(R.id.text_round);
-            viewHolder.textMain= view.findViewById(R.id.text_main);
-            viewHolder.textMain2= view.findViewById(R.id.text_main2);
-            viewHolder.textTime=view.findViewById(R.id.text_time);
-            viewHolder.imageFavorite = view.findViewById(R.id.image_favorite);
-            view.setTag(viewHolder);
-        }
-        else
-            viewHolder = (ViewHolder) view.getTag();
+public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        final ContactModel contact = contacts.get(i);
-        viewHolder.textFullname.setText(contact.getFullname());
-        viewHolder.textRound.setText(contact.getFullname().substring(0, 1));
-        viewHolder.textMain.setText(contact.getMain());
-        viewHolder.textMain2.setText(contact.getMain2());
-        viewHolder.textTime.setText(contact.getTime());
-
-        if (contact.isSelected())
-            viewHolder.imageFavorite.setImageResource(R.drawable.ic_star_favorite);
-        else
-            viewHolder.imageFavorite.setImageResource(R.drawable.ic_star_normal);
-        viewHolder.imageFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isSelected = contacts.get(i).isSelected;
-                contacts.get(i).setSelected(!isSelected);
-                notifyDataSetChanged();
-            }
-        });
-        return view;
+    List<ContactModel> items;
+    List<ContactModel> items2;
+    public ImageAdapter(List<ContactModel> items) {
+        this.items = items;
     }
-    class ViewHolder {
-        TextView textFullname;
-        TextView textRound;
-        ImageView imageFavorite;
-        TextView textMain;
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_1, parent, false);
+        return new EmailViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        EmailViewHolder viewHolder = (EmailViewHolder) holder;
+        ContactModel item = items.get(position);
+
+        viewHolder.textLetter.setText(item.getName().substring(0, 1));
+
+        Drawable background = viewHolder.textLetter.getBackground();
+        background.setColorFilter(new PorterDuffColorFilter(item.getColor(), PorterDuff.Mode.SRC_ATOP));
+
+        viewHolder.textName.setText(item.getName());
+        viewHolder.textSubject.setText(item.getSubject());
+        viewHolder.textContent.setText(item.getContent());
+        viewHolder.textTime.setText(item.getTime());
+        if (item.isFavorite())
+            viewHolder.imageFavorite.setImageResource(R.drawable.ic_star);
+
+        else
+            viewHolder.imageFavorite.setImageResource(R.drawable.ic_star_border);
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+    class EmailViewHolder extends RecyclerView.ViewHolder {
+        TextView textLetter;
+        TextView textName;
+        TextView textSubject;
+        TextView textContent;
         TextView textTime;
-        TextView textMain2;
+        ImageView imageFavorite;
+
+
+        public EmailViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+
+
+            textLetter = itemView.findViewById(R.id.text_letter);
+            textName = itemView.findViewById(R.id.text_name);
+            textSubject = itemView.findViewById(R.id.text_subject);
+            textContent = itemView.findViewById(R.id.text_content);
+            textTime = itemView.findViewById(R.id.text_time);
+            imageFavorite = itemView.findViewById(R.id.image_favorite);
+
+            imageFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean isFavorite = items.get(getAdapterPosition()).isFavorite();
+                    items.get(getAdapterPosition()).setFavorite(!isFavorite);
+                    notifyDataSetChanged();
+                }
+            });
+        }
     }
 }
 
